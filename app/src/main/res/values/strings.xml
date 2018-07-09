@@ -8,4 +8,10 @@
     <string name="precipitation">Precipitation</string>
     <string name="forecast">FORECAST</string>
     <string name="this_week">THIS WEEK</string>
+    <string name="now">Now</string>
+    <string name="api_key">c4f30e7ffd56f8a739fbf78c2ec2f22e</string>
+    <string name="temperature_template">%1$d°</string>
+    <string name="humidity_template">%1$.0f %%</string>
+    <string name="wind_speed_template">%1$d km/h</string>
+    <string name="precipitation_template">%1$.5f mm</string>
 </resources>
