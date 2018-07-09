@@ -6,11 +6,13 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.vovik.weatherforcast.DarkSkyWeather.DailyData;
@@ -60,7 +62,31 @@ public class PageFragmentDisplay extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_city_weather, container, false);
 
+
         ImageButton deleteButton = rootView.findViewById(R.id.imageButtonRemoveItem);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeFragment();
+            }
+        });
+
+        ImageButton listButton = rootView.findViewById(R.id.listImageButton);
+        listButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = getPopupMenu(view);
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        onPopupMenuClick(menuItem);
+                        return true;
+                    }
+                });
+                menu.show();
+            }
+        });
+
 
         TextView v = rootView.findViewById(R.id.textViewDarkSky);
         timeShift = TimeZone.getTimeZone(data.getTimezone()).getRawOffset()/1000;
@@ -434,6 +460,18 @@ public class PageFragmentDisplay extends Fragment {
     }
 
     public void updateMinutely(Double lattitude, Double longitude){
+
+    }
+
+    public void removeFragment(){
+
+    }
+
+    public PopupMenu getPopupMenu(View root){
+        return null;
+    }
+
+    public void onPopupMenuClick(MenuItem item){
 
     }
 }

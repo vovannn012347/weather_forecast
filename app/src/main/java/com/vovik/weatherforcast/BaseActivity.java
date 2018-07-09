@@ -6,12 +6,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextThemeWrapper;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.vovik.weatherforcast.DarkSkyWeather.PlaceWeather;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -54,7 +61,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    void addNewPlace(Address location){
+    void addNewPlace(final Address location){
 
         if(uploadingData){
             return;
@@ -77,7 +84,12 @@ public class BaseActivity extends AppCompatActivity {
                                 if(!response.isSuccessful()){
                                     return;
                                 }
-                                addPlaceFragment(response.body());
+                                StringBuilder locationString = new StringBuilder();
+                                for(int i = 0; i <= location.getMaxAddressLineIndex(); ++i){
+                                    locationString.append(location.getAddressLine(i));
+                                }
+
+                                addPlaceFragment(response.body(), locationString.toString());
                                 uploadingData = false;
                             }
 
@@ -89,8 +101,9 @@ public class BaseActivity extends AppCompatActivity {
                         });
     }
 
-    void addPlaceFragment(PlaceWeather weather){
+    void addPlaceFragment(PlaceWeather weather, String location){
 
+        weather.setLocation(location);
         sectionPagerAdapter.addNewFragment(weather);
     }
 
@@ -145,25 +158,35 @@ public class BaseActivity extends AppCompatActivity {
                         });
     }
 
+    List<String> getFragmetnsList(){
+        ArrayList<String> ret = new ArrayList<>(sectionPagerAdapter.weatherPages.size());
+
+        for(int i = 0; i < sectionPagerAdapter.weatherPages.size(); ++i){
+            ret.add(sectionPagerAdapter.weatherPages.get(i).getLocation());
+        }
+
+        return ret;
+    }
+
     public class WeatherFragmentManager extends CustomManager{
         public WeatherFragmentManager(FragmentManager fm) {
             super(fm);
             weatherPages = new LinkedList<>();
             adddPage = WeatherPageAdd.instance();
         }
+
         @Override
         public Fragment getItem(int position) {
 
             if(position < weatherPages.size()){
-                return WeatherDisplaypage.instance(weatherPages.get(position));
+                return WeatherDisplayPage.instance(weatherPages.get(position));
             }else{
                 return adddPage;
             }
         }
     }
 
-
-    public static class WeatherDisplaypage extends PageFragmentDisplay {
+    public static class WeatherDisplayPage extends PageFragmentDisplay {
         @Override
         public void updateHourly(Double lattitude, Double longitude){
             ((BaseActivity)getActivity()).updateHourly(this, lattitude, longitude);
@@ -186,13 +209,41 @@ public class BaseActivity extends AppCompatActivity {
             });
         }
 
-        public static WeatherDisplaypage instance(PlaceWeather data){
-            WeatherDisplaypage f = new WeatherDisplaypage();
+        @Override
+        public void removeFragment(){
+            ((BaseActivity)getActivity()).removeItem(this.data);
+        }
+
+        @Override
+        public void  onPopupMenuClick(MenuItem item){
+            ((BaseActivity)getActivity()).viewPager.setCurrentItem(item.getItemId());
+        }
+
+        @Override
+        public PopupMenu getPopupMenu(View root){
+            List<String> menuItems = ((BaseActivity)getActivity()).getFragmetnsList();
+            ContextThemeWrapper darkColorApply = new ContextThemeWrapper(getContext(), R.style.popupMenuStyle);
+
+            PopupMenu ret = new PopupMenu(darkColorApply, root);
+
+            for(int i = 0; i < menuItems.size(); ++i){
+                ret.getMenu().add(Menu.NONE, i, i, menuItems.get(i));
+            }
+
+            ret.getMenu().add(Menu.NONE, menuItems.size(), menuItems.size(), getResources().getString(R.string.menu_add_button));
+
+            return ret;
+        }
+
+        public static WeatherDisplayPage instance(PlaceWeather data){
+            WeatherDisplayPage f = new WeatherDisplayPage();
             f.data = data;
             f.timeShift = TimeZone.getTimeZone(data.getTimezone()).getRawOffset() - TimeZone.getDefault().getRawOffset();
 
             return f;
         }
+
+
     }
 
     public static class WeatherPageAdd extends PageFragmentAdd{

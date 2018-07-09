@@ -9,6 +9,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class PlaceWeather {
 
+    @SerializedName("location")
+    @Expose
+    private String location;
+
     @SerializedName("latitude")
     @Expose
     private Double latitude;
@@ -64,6 +68,10 @@ public class PlaceWeather {
         this.hourly = hourly;
         this.daily = daily;
     }
+
+    public String getLocation(){ return location; }
+
+    public void setLocation(String location){ this.location = location; }
 
     public Double getLatitude() {
         return latitude;

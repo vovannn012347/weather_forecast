@@ -10,6 +10,11 @@
         <item name="android:tint">@color/textColor</item>
     </style>
 
+    <style name="popupMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@color/popupMenuColor</item>
+        <item name="android:tint">@color/popupMenuColor</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

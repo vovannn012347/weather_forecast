@@ -14,4 +14,5 @@
     <string name="humidity_template">%1$.0f %%</string>
     <string name="wind_speed_template">%1$d km/h</string>
     <string name="precipitation_template">%1$.5f mm</string>
+    <string name="menu_add_button">Add ...</string>
 </resources>
