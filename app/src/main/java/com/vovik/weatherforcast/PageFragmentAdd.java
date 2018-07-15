@@ -120,7 +120,7 @@ public class PageFragmentAdd extends Fragment {// implements OnMapReadyCallback 
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 //            mv.onSaveInstanceState(savedInstanceState);
-
+        if(placeAddressView!=null)
         savedInstanceState.putCharSequence("PlaceString", placeAddressView.getText());
     }
 

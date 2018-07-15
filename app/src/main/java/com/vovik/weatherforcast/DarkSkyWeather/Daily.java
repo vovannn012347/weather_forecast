@@ -1,13 +1,32 @@
 
 package com.vovik.weatherforcast.DarkSkyWeather;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "Daily",
+        foreignKeys = @ForeignKey(entity = PlaceWeather.class,
+                parentColumns = "id",
+                childColumns = "parentPlaceId",
+                onDelete = CASCADE),
+        indices = @Index("parentPlaceId"))
 public class Daily {
+
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+
+    private long parentPlaceId;
 
     @SerializedName("summary")
     @Expose
@@ -15,29 +34,29 @@ public class Daily {
     @SerializedName("icon")
     @Expose
     private String icon;
+
     @SerializedName("data")
     @Expose
-    private List<DailyData> data = new ArrayList<DailyData>();
+    @Ignore
+    private List<DailyData> data = new ArrayList<>();
 
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
     public Daily() {
     }
 
-    /**
-     * 
-     * @param summary
-     * @param icon
-     * @param data
-     */
     public Daily(String summary, String icon, List<DailyData> data) {
         super();
         this.summary = summary;
         this.icon = icon;
         this.data = data;
     }
+
+    public long getId(){ return id; }
+
+    public void setId(long id){ this.id = id; }
+
+    public long getParentPlaceId(){ return parentPlaceId; }
+
+    public void setParentPlaceId(long parentPlaceId){ this.parentPlaceId = parentPlaceId; }
 
     public String getSummary() {
         return summary;

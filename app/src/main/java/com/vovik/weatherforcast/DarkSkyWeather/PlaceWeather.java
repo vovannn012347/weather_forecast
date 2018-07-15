@@ -1,13 +1,22 @@
 package com.vovik.weatherforcast.DarkSkyWeather;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by vovik on 06.07.2018.
  */
-
+@Entity(tableName = "PlaceWeather",
+        indices = @Index("timezone"))
 public class PlaceWeather {
+
+    @PrimaryKey(autoGenerate = true)
+    private long id;
 
     @SerializedName("location")
     @Expose
@@ -27,18 +36,22 @@ public class PlaceWeather {
 
     @SerializedName("currently")
     @Expose
+    @Ignore
     private Currently currently;
 
     @SerializedName("minutely")
     @Expose
+    @Ignore
     private Minutely minutely;
 
     @SerializedName("hourly")
     @Expose
+    @Ignore
     private Hourly hourly;
 
     @SerializedName("daily")
     @Expose
+    @Ignore
     private Daily daily;
 
     /**
@@ -68,6 +81,10 @@ public class PlaceWeather {
         this.hourly = hourly;
         this.daily = daily;
     }
+
+    public long getId(){ return id; }
+
+    public void setId(long id){ this.id = id; }
 
     public String getLocation(){ return location; }
 

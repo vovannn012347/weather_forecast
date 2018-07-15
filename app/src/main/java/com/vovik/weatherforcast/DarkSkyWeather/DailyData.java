@@ -1,10 +1,30 @@
 
 package com.vovik.weatherforcast.DarkSkyWeather;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "DailyData",
+        foreignKeys =
+        @ForeignKey(entity = PlaceWeather.class,
+                parentColumns = "id",
+                childColumns = "parentPlaceId",
+                onDelete = CASCADE),
+        indices = {@Index("time"), @Index("parentPlaceId")})
 public class DailyData {
+
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+
+    private long parentPlaceId;
 
     @SerializedName("time")
     @Expose
@@ -27,42 +47,18 @@ public class DailyData {
     @SerializedName("precipIntensity")
     @Expose
     private Double precipIntensity;
-//    @SerializedName("precipIntensityMax")
-//    @Expose
-//    private Double precipIntensityMax;
-//    @SerializedName("precipIntensityMaxTime")
-//    @Expose
-//    private Integer precipIntensityMaxTime;
-//    @SerializedName("precipProbability")
-//    @Expose
-//    private Double precipProbability;
     @SerializedName("precipType")
     @Expose
     private String precipType;
     @SerializedName("temperatureHigh")
     @Expose
     private Double temperatureHigh;
-//    @SerializedName("temperatureHighTime")
-//    @Expose
-//    private Integer temperatureHighTime;
     @SerializedName("temperatureLow")
     @Expose
     private Double temperatureLow;
-//    @SerializedName("temperatureLowTime")
-//    @Expose
-//    private Integer temperatureLowTime;
     @SerializedName("apparentTemperatureHigh")
     @Expose
     private Double apparentTemperatureHigh;
-//    @SerializedName("apparentTemperatureHighTime")
-//    @Expose
-//    private Integer apparentTemperatureHighTime;
-//    @SerializedName("apparentTemperatureLow")
-//    @Expose
-//    private Double apparentTemperatureLow;
-//    @SerializedName("apparentTemperatureLowTime")
-//    @Expose
-//    private Integer apparentTemperatureLowTime;
     @SerializedName("dewPoint")
     @Expose
     private Double dewPoint;
@@ -75,6 +71,39 @@ public class DailyData {
     @SerializedName("windSpeed")
     @Expose
     private Double windSpeed;
+    @SerializedName("temperatureMin")
+    @Expose
+    private Double temperatureMin;
+    @SerializedName("temperatureMax")
+    @Expose
+    private Double temperatureMax;
+    @SerializedName("apparentTemperatureMin")
+    @Expose
+    private Double apparentTemperatureMin;
+//    @SerializedName("precipIntensityMax")
+//    @Expose
+//    private Double precipIntensityMax;
+//    @SerializedName("precipIntensityMaxTime")
+//    @Expose
+//    private Integer precipIntensityMaxTime;
+//    @SerializedName("precipProbability")
+//    @Expose
+//    private Double precipProbability;
+//    @SerializedName("temperatureHighTime")
+//    @Expose
+//    private Integer temperatureHighTime;
+//    @SerializedName("temperatureLowTime")
+//    @Expose
+//    private Integer temperatureLowTime;
+//    @SerializedName("apparentTemperatureHighTime")
+//    @Expose
+//    private Integer apparentTemperatureHighTime;
+//    @SerializedName("apparentTemperatureLow")
+//    @Expose
+//    private Double apparentTemperatureLow;
+//    @SerializedName("apparentTemperatureLowTime")
+//    @Expose
+//    private Integer apparentTemperatureLowTime;
 //    @SerializedName("windGust")
 //    @Expose
 //    private Double windGust;
@@ -99,21 +128,12 @@ public class DailyData {
 //    @SerializedName("ozone")
 //    @Expose
 //    private Double ozone;
-    @SerializedName("temperatureMin")
-    @Expose
-    private Double temperatureMin;
 //    @SerializedName("temperatureMinTime")
 //    @Expose
 //    private Integer temperatureMinTime;
-    @SerializedName("temperatureMax")
-    @Expose
-    private Double temperatureMax;
 //    @SerializedName("temperatureMaxTime")
 //    @Expose
 //    private Integer temperatureMaxTime;
-    @SerializedName("apparentTemperatureMin")
-    @Expose
-    private Double apparentTemperatureMin;
 //    @SerializedName("apparentTemperatureMinTime")
 //    @Expose
 //    private Integer apparentTemperatureMinTime;
@@ -128,7 +148,7 @@ public class DailyData {
     public DailyData() {
     }
 
-
+    @Ignore
     public DailyData(
             Integer time,
             String summary,
@@ -211,6 +231,15 @@ public class DailyData {
 //        this.apparentTemperatureMax = apparentTemperatureMax;
 //        this.apparentTemperatureMaxTime = apparentTemperatureMaxTime;
     }
+
+
+    public long getId(){ return id; }
+
+    public void setId(long id){ this.id = id; }
+
+    public long getParentPlaceId(){ return parentPlaceId; }
+
+    public void setParentPlaceId(long parentPlaceId){ this.parentPlaceId = parentPlaceId; }
 
     public Integer getTime() {
         return time;

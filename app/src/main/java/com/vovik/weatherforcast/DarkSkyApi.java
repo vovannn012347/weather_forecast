@@ -28,6 +28,13 @@ public interface DarkSkyApi {
                                      @Path("lat") double latitude,
                                      @Path("long") double longitude);
 
+    @GET("/forecast/{apiKey}/{lat},{long},{time}")
+    Call<PlaceWeather> getTimeForecast(@Path("apiKey") String apiKey,
+                                   @Path("lat") double latitude,
+                                   @Path("long") double longitude,
+                                   @Path("time") long time,
+                                   @Nullable @QueryMap Map<String, String> options);
+
 
 }
 

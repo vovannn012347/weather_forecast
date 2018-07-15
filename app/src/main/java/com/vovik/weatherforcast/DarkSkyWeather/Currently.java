@@ -1,53 +1,81 @@
 
 package com.vovik.weatherforcast.DarkSkyWeather;
 
+//import android.arch.persistence.room.Entity;
+//import android.arch.persistence.room.ForeignKey;
+//import android.arch.persistence.room.Index;
+//import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+//@Entity(tableName = "Currently",
+//        foreignKeys = @ForeignKey(entity = PlaceWeather.class,
+//        parentColumns = "id",
+//        childColumns = "parentPlaceId"),
+//        indices = @Index("time"))
 public class Currently {
+
+//    @PrimaryKey(autoGenerate = true)
+//    private long id;
+//
+//    private long parentPlaceId;
 
     @SerializedName("time")
     @Expose
     private Integer time;
+
     @SerializedName("summary")
     @Expose
     private String summary;
+
     @SerializedName("icon")
     @Expose
     private String icon;
+
     @SerializedName("nearestStormDistance")
     @Expose
     private Integer nearestStormDistance;
+
     @SerializedName("precipIntensity")
     @Expose
     private Double precipIntensity;
+
+    @SerializedName("precipType")
+    @Expose
+    private String precipType;
+
+    @SerializedName("temperature")
+    @Expose
+    private Double temperature;
+
+    @SerializedName("apparentTemperature")
+    @Expose
+    private Double apparentTemperature;
+
+    @SerializedName("humidity")
+    @Expose
+    private Double humidity;
+
+    @SerializedName("pressure")
+    @Expose
+    private Double pressure;
+
+    @SerializedName("windSpeed")
+    @Expose
+    private Double windSpeed;
+
 //    @SerializedName("precipIntensityError")
 //    @Expose
 //    private Double precipIntensityError;
 //    @SerializedName("precipProbability")
 //    @Expose
 //    private Double precipProbability;
-    @SerializedName("precipType")
-    @Expose
-    private String precipType;
-    @SerializedName("temperature")
-    @Expose
-    private Double temperature;
-    @SerializedName("apparentTemperature")
-    @Expose
-    private Double apparentTemperature;
+
 //    @SerializedName("dewPoint")
 //    @Expose
 //    private Double dewPoint;
-    @SerializedName("humidity")
-    @Expose
-    private Double humidity;
-    @SerializedName("pressure")
-    @Expose
-    private Double pressure;
-    @SerializedName("windSpeed")
-    @Expose
-    private Double windSpeed;
+
 //    @SerializedName("windGust")
 //    @Expose
 //    private Double windGust;
@@ -115,6 +143,14 @@ public class Currently {
 //        this.visibility = visibility;
 //        this.ozone = ozone;
     }
+
+//    public long getId(){ return id; }
+//
+//    public void setId(long id){ this.id = id; }
+//
+//    public long getParentPlaceId(){ return parentPlaceId; }
+//
+//    public void setParentPlaceId(long parentPlaceId){ this.parentPlaceId = parentPlaceId; }
 
     public Integer getTime() {
         return time;

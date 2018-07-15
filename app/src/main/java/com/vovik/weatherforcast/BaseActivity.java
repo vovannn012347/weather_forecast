@@ -35,6 +35,7 @@ public class BaseActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private DarkSkyApi api;
     private boolean uploadingData;
+    private DatabaseTools databaseTools;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,8 @@ public class BaseActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        databaseTools = new DatabaseTools(this);
+
         api = retrofit.create(DarkSkyApi.class);
 
         sectionPagerAdapter = new WeatherFragmentManager(getSupportFragmentManager());
@@ -53,7 +56,34 @@ public class BaseActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.container);
         viewPager.setAdapter(sectionPagerAdapter);
 
-        uploadingData = false;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                final List<PlaceWeather> places = databaseTools.loadFromDb();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        addFragments(places);
+                    }
+                });
+
+                uploadingData = false;
+
+            }
+        }).start();
+    }
+
+    public void addFragments(List<PlaceWeather> places){
+        for(int i = 0; i < places.size(); ++i){
+            sectionPagerAdapter.addNewFragment(places.get(i));
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -101,16 +131,33 @@ public class BaseActivity extends AppCompatActivity {
                         });
     }
 
-    void addPlaceFragment(PlaceWeather weather, String location){
+    /*
+     * this must run in another thread
+     */
+    void addPlaceFragment(final PlaceWeather weather, String location){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                databaseTools.getForecastInitially(api, weather);
+            }
+        }).start();
 
         weather.setLocation(location);
         sectionPagerAdapter.addNewFragment(weather);
     }
 
-    void removeItem(PlaceWeather f){
+    void removeItem(final PlaceWeather f){
         sectionPagerAdapter.removeOldFragment(f);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                databaseTools.deletePlace(f);
+            }
+        }).start();
     }
 
+    //called on create
     void updateMinutely(final PageFragmentDisplay d, double lattitude, double longitude){
         api.getMinutely(getResources().getString(R.string.api_key),
                 lattitude, longitude)
@@ -123,10 +170,17 @@ public class BaseActivity extends AppCompatActivity {
                                     return;
                                 }
                                 d.updateMinutely(response.body());
+
+                                databaseTools.deleteObsoleteEntries(
+                                        System.currentTimeMillis()/1000
+                                );
                             }
 
                             @Override
                             public void onFailure(Call<PlaceWeather> call, Throwable t) {
+                                databaseTools.deleteObsoleteEntries(
+                                        System.currentTimeMillis()/1000
+                                );
                                 Toast.makeText(getApplicationContext(), "Failed updating minutely weather", Toast.LENGTH_LONG).show();
                             }
                         });
@@ -149,10 +203,23 @@ public class BaseActivity extends AppCompatActivity {
                                     return;
                                 }
                                 d.updatePlaceWeather(response.body());
+
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        databaseTools.updateForecast(api, d.data);
+                                    }
+                                }).start();
                             }
 
                             @Override
                             public void onFailure(Call<PlaceWeather> call, Throwable t) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        databaseTools.updateFromDb(d.data);
+                                    }
+                                }).start();
                                 Toast.makeText(getApplicationContext(), "Failed updating weather", Toast.LENGTH_LONG).show();
                             }
                         });

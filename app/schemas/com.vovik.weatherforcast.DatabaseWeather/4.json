@@ -1,0 +1,450 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "891d5a411e4f618931348d153ee50a7d",
+    "entities": [
+      {
+        "tableName": "PlaceWeather",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `location` TEXT, `latitude` REAL, `longitude` REAL, `timezone` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timezone",
+            "columnName": "timezone",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_PlaceWeather_timezone",
+            "unique": false,
+            "columnNames": [
+              "timezone"
+            ],
+            "createSql": "CREATE  INDEX `index_PlaceWeather_timezone` ON `${TABLE_NAME}` (`timezone`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Hourly",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentDayId` INTEGER NOT NULL, `summary` TEXT, `icon` TEXT, FOREIGN KEY(`parentDayId`) REFERENCES `DailyData`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentDayId",
+            "columnName": "parentDayId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "summary",
+            "columnName": "summary",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Hourly_parentDayId",
+            "unique": false,
+            "columnNames": [
+              "parentDayId"
+            ],
+            "createSql": "CREATE  INDEX `index_Hourly_parentDayId` ON `${TABLE_NAME}` (`parentDayId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "DailyData",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parentDayId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "HourlyData",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentDayId` INTEGER NOT NULL, `time` INTEGER, `summary` TEXT, `icon` TEXT, `precipIntensity` REAL, `precipType` TEXT, `temperature` REAL, `humidity` REAL, `windSpeed` REAL, FOREIGN KEY(`parentDayId`) REFERENCES `DailyData`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentDayId",
+            "columnName": "parentDayId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "summary",
+            "columnName": "summary",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "precipIntensity",
+            "columnName": "precipIntensity",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "precipType",
+            "columnName": "precipType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "temperature",
+            "columnName": "temperature",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "humidity",
+            "columnName": "humidity",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "windSpeed",
+            "columnName": "windSpeed",
+            "affinity": "REAL",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_HourlyData_time",
+            "unique": false,
+            "columnNames": [
+              "time"
+            ],
+            "createSql": "CREATE  INDEX `index_HourlyData_time` ON `${TABLE_NAME}` (`time`)"
+          },
+          {
+            "name": "index_HourlyData_parentDayId",
+            "unique": false,
+            "columnNames": [
+              "parentDayId"
+            ],
+            "createSql": "CREATE  INDEX `index_HourlyData_parentDayId` ON `${TABLE_NAME}` (`parentDayId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "DailyData",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parentDayId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Daily",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentPlaceId` INTEGER NOT NULL, `summary` TEXT, `icon` TEXT, FOREIGN KEY(`parentPlaceId`) REFERENCES `PlaceWeather`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentPlaceId",
+            "columnName": "parentPlaceId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "summary",
+            "columnName": "summary",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Daily_parentPlaceId",
+            "unique": false,
+            "columnNames": [
+              "parentPlaceId"
+            ],
+            "createSql": "CREATE  INDEX `index_Daily_parentPlaceId` ON `${TABLE_NAME}` (`parentPlaceId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "PlaceWeather",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parentPlaceId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "DailyData",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parentPlaceId` INTEGER NOT NULL, `time` INTEGER, `summary` TEXT, `icon` TEXT, `sunriseTime` INTEGER, `sunsetTime` INTEGER, `moonPhase` REAL, `precipIntensity` REAL, `precipType` TEXT, `temperatureHigh` REAL, `temperatureLow` REAL, `apparentTemperatureHigh` REAL, `dewPoint` REAL, `humidity` REAL, `pressure` REAL, `windSpeed` REAL, `temperatureMin` REAL, `temperatureMax` REAL, `apparentTemperatureMin` REAL, FOREIGN KEY(`parentPlaceId`) REFERENCES `PlaceWeather`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentPlaceId",
+            "columnName": "parentPlaceId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "summary",
+            "columnName": "summary",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sunriseTime",
+            "columnName": "sunriseTime",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sunsetTime",
+            "columnName": "sunsetTime",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "moonPhase",
+            "columnName": "moonPhase",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "precipIntensity",
+            "columnName": "precipIntensity",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "precipType",
+            "columnName": "precipType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "temperatureHigh",
+            "columnName": "temperatureHigh",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "temperatureLow",
+            "columnName": "temperatureLow",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "apparentTemperatureHigh",
+            "columnName": "apparentTemperatureHigh",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dewPoint",
+            "columnName": "dewPoint",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "humidity",
+            "columnName": "humidity",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pressure",
+            "columnName": "pressure",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "windSpeed",
+            "columnName": "windSpeed",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "temperatureMin",
+            "columnName": "temperatureMin",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "temperatureMax",
+            "columnName": "temperatureMax",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "apparentTemperatureMin",
+            "columnName": "apparentTemperatureMin",
+            "affinity": "REAL",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_DailyData_time",
+            "unique": false,
+            "columnNames": [
+              "time"
+            ],
+            "createSql": "CREATE  INDEX `index_DailyData_time` ON `${TABLE_NAME}` (`time`)"
+          },
+          {
+            "name": "index_DailyData_parentPlaceId",
+            "unique": false,
+            "columnNames": [
+              "parentPlaceId"
+            ],
+            "createSql": "CREATE  INDEX `index_DailyData_parentPlaceId` ON `${TABLE_NAME}` (`parentPlaceId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "PlaceWeather",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parentPlaceId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"891d5a411e4f618931348d153ee50a7d\")"
+    ]
+  }
+}

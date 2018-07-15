@@ -1,47 +1,75 @@
 
 package com.vovik.weatherforcast.DarkSkyWeather;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "HourlyData",
+        foreignKeys =
+        @ForeignKey(entity = DailyData.class,
+                parentColumns = "id",
+                childColumns = "parentDayId",
+                onDelete = CASCADE),
+        indices = {@Index("time"),@Index("parentDayId")})
 public class HourlyData {
+
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+
+    private long parentDayId;
 
     @SerializedName("time")
     @Expose
     private Integer time;
+
     @SerializedName("summary")
     @Expose
     private String summary;
+
     @SerializedName("icon")
     @Expose
     private String icon;
+
     @SerializedName("precipIntensity")
     @Expose
     private Double precipIntensity;
-//    @SerializedName("precipProbability")
-//    @Expose
-//    private Double precipProbability;
+
     @SerializedName("precipType")
     @Expose
     private String precipType;
+
     @SerializedName("temperature")
     @Expose
     private Double temperature;
+
+    @SerializedName("humidity")
+    @Expose
+    private Double humidity;
+
+    @SerializedName("windSpeed")
+    @Expose
+    private Double windSpeed;
+
+//    @SerializedName("precipProbability")
+//    @Expose
+//    private Double precipProbability;
 //    @SerializedName("apparentTemperature")
 //    @Expose
 //    private Double apparentTemperature;
 //    @SerializedName("dewPoint")
 //    @Expose
 //    private Double dewPoint;
-    @SerializedName("humidity")
-    @Expose
-    private Double humidity;
 //    @SerializedName("pressure")
 //    @Expose
 //    private Double pressure;
-    @SerializedName("windSpeed")
-    @Expose
-    private Double windSpeed;
 //    @SerializedName("windGust")
 //    @Expose
 //    private Double windGust;
@@ -64,7 +92,7 @@ public class HourlyData {
     public HourlyData() {
     }
 
-
+    @Ignore
     public HourlyData(
             Integer time,
             String summary,
@@ -105,6 +133,14 @@ public class HourlyData {
 //        this.visibility = visibility;
 //        this.ozone = ozone;
     }
+
+    public long getId(){ return id; }
+
+    public void setId(long id){ this.id = id; }
+
+    public long getParentDayId(){ return parentDayId; }
+
+    public void setParentDayId(long parentDayId){ this.parentDayId = parentDayId; }
 
     public Integer getTime() {
         return time;
